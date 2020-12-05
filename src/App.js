@@ -1,5 +1,6 @@
 //feature-1
 import React from "react";
+import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 import Products from "./components/Products";
 import data from "./data.json";
@@ -8,11 +9,47 @@ class App extends React.Component {
   constructor(){
     super();
     this.state ={
-      products : data.products,
-      size : "",
-      sort : ""
+      products: data.products,
+      cartItems: [],
+      size: "",
+      sort: "",
+      totalPiece: 0,
     };
   }
+  removeFromCart = (product) => {
+    const cartItems = this.state.cartItems.slice();
+    var totalPiece = this.state.totalPiece;
+    var removedTotalPiece = 0;
+    cartItems.forEach(item =>{
+      if(item._id === product._id){
+        removedTotalPiece = totalPiece - product.count;
+      }
+    })
+    this.setState({
+      cartItems: cartItems.filter(x => x._id !== product._id),
+      totalPiece: removedTotalPiece
+    });
+  }
+  addToCart = (product) => {
+    const cartItems = this.state.cartItems.slice();
+    var totalPiece = this.state.totalPiece;
+    let alreadyInCart = false;
+    cartItems.forEach(item => {
+      if(item._id === product._id){
+        item.count++;
+        totalPiece++;
+        alreadyInCart = true;
+      }
+    });
+    if(!alreadyInCart){
+      cartItems.push({...product, count: 1})
+      totalPiece++;
+    };
+    this.setState({cartItems});
+    this.setState({totalPiece});
+    console.log(totalPiece);
+  }
+
   sortProducts = (event) => {
     const sort =event.target.value;
     console.log(event.target.value);
@@ -53,10 +90,15 @@ class App extends React.Component {
                 filterProducts={this.filterProducts}
                 sortProducts={this.sortProducts}
               ></Filter>
-              <Products products={this.state.products}></Products>
+              <Products products={this.state.products} 
+              addToCart={this.addToCart}
+              ></Products>
             </div>
             <div className="sidebar">
-              Cart Item
+              <Cart cartItems={this.state.cartItems}
+              removeFromCart={this.removeFromCart}
+              totalPiece={this.state.totalPiece}
+              ></Cart>
             </div>
           </div>
         </main>
