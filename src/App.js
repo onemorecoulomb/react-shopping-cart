@@ -8,28 +8,19 @@ import data from "./data.json";
 class App extends React.Component {
   constructor(){
     super();
-    this.state ={
+    this.state = {
       products: data.products,
-      cartItems: [],
+      cartItems: localStorage.getItem("cartItems")? JSON.parse(localStorage.getItem("cartItems")): [],
       size: "",
       sort: "",
-      totalPiece: 0,
+      totalPiece: localStorage.getItem("totalPiece")? localStorage.getItem("totalPiece") :0,
     };
   }
-  removeFromCart = (product) => {
-    const cartItems = this.state.cartItems.slice();
-    var totalPiece = this.state.totalPiece;
-    var removedTotalPiece = 0;
-    cartItems.forEach(item =>{
-      if(item._id === product._id){
-        removedTotalPiece = totalPiece - product.count;
-      }
-    })
-    this.setState({
-      cartItems: cartItems.filter(x => x._id !== product._id),
-      totalPiece: removedTotalPiece
-    });
+
+  createOrder = (order) => {
+    alert("Need  to save order for " + order.name);
   }
+
   addToCart = (product) => {
     const cartItems = this.state.cartItems.slice();
     var totalPiece = this.state.totalPiece;
@@ -45,9 +36,27 @@ class App extends React.Component {
       cartItems.push({...product, count: 1})
       totalPiece++;
     };
-    this.setState({cartItems});
-    this.setState({totalPiece});
-    console.log(totalPiece);
+    this.setState({cartItems, totalPiece});
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    localStorage.setItem("totalPiece", totalPiece);
+  }
+  
+  removeFromCart = (product) => {
+    const cartItems = this.state.cartItems.slice();
+    var totalPiece = this.state.totalPiece;
+    var removedTotalPiece = 0;
+    cartItems.forEach(item =>{
+      if(item._id === product._id){
+        removedTotalPiece = totalPiece - product.count;
+        localStorage.setItem("totalPiece", removedTotalPiece);;
+      }
+    })
+    this.setState({
+      cartItems: cartItems.filter(x => x._id !== product._id),
+      totalPiece: removedTotalPiece
+    });
+    localStorage.setItem("cartItems", JSON.stringify(cartItems.filter(x => x._id !== product._id)));
+    
   }
 
   sortProducts = (event) => {
@@ -76,6 +85,8 @@ class App extends React.Component {
     }
   };
   render() {
+    // localStorage.clear();
+    //console.log(localStorage.getItem("totalPiece"));
     return (
       <div className='grid-container'>
         <header>
@@ -98,6 +109,7 @@ class App extends React.Component {
               <Cart cartItems={this.state.cartItems}
               removeFromCart={this.removeFromCart}
               totalPiece={this.state.totalPiece}
+              createOrder={this.createOrder}
               ></Cart>
             </div>
           </div>
