@@ -35,7 +35,7 @@ export default class Cart extends Component {
                         </ul>
                     </div>
                     {cartItems.length !==0 &&(
-                        <div calssName="cart"> 
+                        <div className="cart"> 
                             <div className="total">
                                 <div>
                                     {totalPiece} pieces, Total : {" "}
