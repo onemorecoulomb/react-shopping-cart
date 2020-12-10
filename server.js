@@ -3,8 +3,23 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const shortid = require("shortid");
 
+
 const app = express();
 app.use(bodyParser.json());
+
+var cors = require('cors');
+app.use(cors());
+var whitelist = ['http://localhost:3000']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 
 //connect instance take 5 arg, connectstring and option
 var mongoVanilla = "mongodb://localhost:27017/react-shopping-cart-db";
@@ -32,7 +47,7 @@ const Product = mongoose.model(
         availableSizes: [String]
     })
 );
-
+// app.get("/api/products", cors(corsOptions), async (req, res) => {
 app.get("/api/products", async (req, res) => {
     try {
         const products = await Product.find({});
