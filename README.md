@@ -42,3 +42,14 @@
     Merge pull request
     In VS Code switch to master and Sync changes
     End => Loop from step 11 for next feature 
+
+# Redux note
+reduct work by create action that send form view with action type to store
+store send stat to reducer to modify it and return
+store send to view to render
+
+so
+- we need to create type action and reducer then create store to work with it
+- provide store to app.js
+- component need to connect it and send state to get modify via store to render
+- component also need to trick require action to store via componentDidMount() too
