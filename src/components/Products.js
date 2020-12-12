@@ -94,4 +94,4 @@ class Products extends Component {
     }
 }
 //connect() take 2 param. 1 is function that except state and reture whice part of state we going to use, 2 is list of action trick to store ,then return another function that accept componant we about to connect
-export default connect((state) => ({products: state.products.items}),{fetchProducts})(Products);
+export default connect((state) => ({products: state.products.filteredItems}),{fetchProducts})(Products);
